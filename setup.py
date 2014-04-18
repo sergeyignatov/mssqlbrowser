@@ -4,16 +4,18 @@ import os
 
 LIB_PATH = sysconfig.get_python_lib()
 
-# ...
-
 plugin_name = 'twisted/plugins/twisted_mssqlbrowser'
-# '.pyc' extension is necessary for correct plugins removing
 data_files = [
   (os.path.join(LIB_PATH, 'twisted', 'plugins'),
    [''.join((plugin_name, extension)) for extension in ('.py', '.pyc')])
 ]
 
 setup(
-      # ...
-      data_files=data_files
+    name='pymssqlbrowser',
+    version='1.0',
+    description='Provide MSSQL database browser fuctionality',
+    author = 'Sergey Ignatov',
+    author_email='cm2k05@gmail.com',
+    data_files=data_files
 )
+
