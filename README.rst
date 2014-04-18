@@ -2,6 +2,7 @@
 python mssql browser service
 =========
 
+Implements MSSQL database browser service.
 
 Installing
 ==========
