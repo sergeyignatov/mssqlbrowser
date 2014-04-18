@@ -34,11 +34,11 @@ class MSUDPHandler(DatagramProtocol):
         client_msg = client_msg.lower().rstrip()[:-1]
         if action == 4:
             if client_msg in self.instances:
-                msg = self.tmpl % (
+                msg = str(self.tmpl % (
                     self.instances[client_msg]['host'].upper(),
                     client_msg.upper(),
                     self.instances[client_msg]['port']
-                )
+                ))
                 msg = struct.pack('<Bh%ds' % len(msg), 5, len(msg), msg)
                 self.transport.write(msg, (host, port))
         elif action == 3:
