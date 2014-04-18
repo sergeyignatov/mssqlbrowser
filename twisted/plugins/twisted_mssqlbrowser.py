@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import struct
 import os
-import signal
 import json
 import sys
 try:
@@ -20,6 +19,7 @@ except ImportError:
 class Options(usage.Options):
     optParameters = [["settings", "f", "settings.json", "Path to settings file"]]
 
+
 class MSUDPHandler(DatagramProtocol):
     def __init__(self, settings):
         if os.path.isfile(settings):
@@ -29,20 +29,23 @@ class MSUDPHandler(DatagramProtocol):
             sys.exit(1)
         self.tmpl = "ServerName;%s;InstanceName;%s;IsClustered;No;Version;11.0.3000.0;tcp;%s;;"
 
-
     def datagramReceived(self, data, (host, port)):
         action, client_msg = struct.unpack('B%ds' % len(data[1:]), data)
         client_msg = client_msg.lower().rstrip()[:-1]
         if action == 4:
             if client_msg in self.instances:
-                msg = self.tmpl % (instances[client_msg]['host'].upper(), client_msg.upper(), instances[client_msg]['port'])
-                msg = struct.pack('<Bh%ds' % len(msg), 5,len(msg), msg)
+                msg = self.tmpl % (
+                    self.instances[client_msg]['host'].upper(),
+                    client_msg.upper(),
+                    self.instances[client_msg]['port']
+                )
+                msg = struct.pack('<Bh%ds' % len(msg), 5, len(msg), msg)
                 self.transport.write(msg, (host, port))
         elif action == 3:
             msg = ''
             for k, v in self.instances.items():
                 msg += str(self.tmpl % (v['host'], k, v['port']))
-            msg = struct.pack('<Bh%ds' % len(msg), 5,len(msg), msg)
+            msg = struct.pack('<Bh%ds' % len(msg), 5, len(msg), msg)
             self.transport.write(msg, (host, port))
 
 
